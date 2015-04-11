@@ -93,7 +93,7 @@
   <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
   <!-- Register Custom Compiler Taskdefs -->
-  <property name="javac2.home" value="${idea.home}/lib"/>
+  <property name="javac2.home" value="intellij_redist/"/>
   <path id="javac2.classpath">
     <pathelement location="${javac2.home}/javac2.jar"/>
     <pathelement location="${javac2.home}/jdom.jar"/>
