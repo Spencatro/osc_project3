@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project3" default="all">
+  
+  
   <property file="project3.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
@@ -85,9 +87,6 @@
       <include name="jre/lib/ext/sunpkcs11.jar"/>
       <include name="jre/lib/ext/zipfs.jar"/>
     </fileset>
-    <fileset dir="intellij_redist">
-      <include name="forms_rt.jar" />
-    </fileset>
   </path>
   
   <property name="project.jdk.home" value="${jdk.home.1.7}"/>
@@ -119,19 +118,4 @@
   <target name="build.modules" depends="init, clean, compile.module.project3" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
-
-  <path id="ij-cp">
-    <fileset dir="intellij_redist">
-      <include name="**/*.jar" />
-    </fileset>
-  </path>
-
-  <target name="run" depends="build.modules">
-    <java classname="BrowserForm">
-      <classpath>
-        <pathelement location="out/production/Project3" />
-        <path refid="ij-cp" />
-      </classpath>
-    </java>
-  </target>
 </project>
