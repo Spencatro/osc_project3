@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_project3" default="compile.module.project3">
+  <dirname property="module.project3.basedir" file="${ant.file.module_project3}"/>
+  
+  <property name="module.jdk.home.project3" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.project3" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.project3" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.project3" value="-encoding UTF-8 -source 1.3 ${compiler.args}"/>
+  
+  <property name="project3.output.dir" value="${module.project3.basedir}/out/production/Project3"/>
+  <property name="project3.testoutput.dir" value="${module.project3.basedir}/out/test/Project3"/>
+  
+  <path id="project3.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="project3.module.production.classpath">
+    <path refid="${module.jdk.classpath.project3}"/>
+  </path>
+  
+  <path id="project3.runtime.production.module.classpath">
+    <pathelement location="${project3.output.dir}"/>
+  </path>
+  
+  <path id="project3.module.classpath">
+    <path refid="${module.jdk.classpath.project3}"/>
+    <pathelement location="${project3.output.dir}"/>
+  </path>
+  
+  <path id="project3.runtime.module.classpath">
+    <pathelement location="${project3.testoutput.dir}"/>
+    <pathelement location="${project3.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.project3">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.project3">
+    <patternset refid="excluded.from.module.project3"/>
+  </patternset>
+  
+  <path id="project3.module.sourcepath">
+    <dirset dir="${module.project3.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.project3" depends="compile.module.project3.production,compile.module.project3.tests" description="Compile module Project3"/>
+  
+  <target name="compile.module.project3.production" depends="register.custom.compilers" description="Compile module Project3; production classes">
+    <mkdir dir="${project3.output.dir}"/>
+    <javac2 destdir="${project3.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.project3}/javac">
+      <compilerarg line="${compiler.args.project3}"/>
+      <bootclasspath refid="project3.module.bootclasspath"/>
+      <classpath refid="project3.module.production.classpath"/>
+      <src refid="project3.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.project3"/>
+    </javac2>
+    
+    <copy todir="${project3.output.dir}">
+      <fileset dir="${module.project3.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.project3.tests" depends="register.custom.compilers,compile.module.project3.production" description="compile module Project3; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.project3" description="cleanup module">
+    <delete dir="${project3.output.dir}"/>
+    <delete dir="${project3.testoutput.dir}"/>
+  </target>
+</project>
