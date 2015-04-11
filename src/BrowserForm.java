@@ -1,5 +1,3 @@
-import sun.plugin.converter.util.CommandLine;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
