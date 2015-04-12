@@ -99,7 +99,11 @@
   <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
   <!-- Register Custom Compiler Taskdefs -->
+<<<<<<< HEAD
   <property name="javac2.home" value="intellij_redist"/>
+=======
+  <property name="javac2.home" value="intellij_redist/"/>
+>>>>>>> 90f409d47dda6bd02b1a59af216035558d8c72eb
   <path id="javac2.classpath">
     <pathelement location="${javac2.home}/javac2.jar"/>
     <pathelement location="${javac2.home}/forms_rt.jar"/>
