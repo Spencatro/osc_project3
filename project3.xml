@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project3" default="all">
-  
+ 
+   <!-- <javac srcdir="src"
+      destdir="out"
+      classpath="intellij_redist/rt_forms.jar"
+      debug="on"
+   /> -->
   
   <property file="project3.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
@@ -87,19 +92,24 @@
       <include name="jre/lib/ext/sunpkcs11.jar"/>
       <include name="jre/lib/ext/zipfs.jar"/>
     </fileset>
+  
   </path>
   
   <property name="project.jdk.home" value="${jdk.home.1.7}"/>
   <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
   <!-- Register Custom Compiler Taskdefs -->
-  <property name="javac2.home" value="${idea.home}/lib"/>
+  <property name="javac2.home" value="intellij_redist"/>
   <path id="javac2.classpath">
     <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/forms_rt.jar"/>
     <pathelement location="${javac2.home}/jdom.jar"/>
     <pathelement location="${javac2.home}/asm-all.jar"/>
-    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+    <!--<pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-common-1.2.1.jar"/>-->
   </path>
+
+
   <target name="register.custom.compilers">
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
     <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
@@ -113,9 +123,23 @@
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.project3" description="cleanup all"/>
+  <target name="clean" depends="clean.module.project3" description="cleanup all">
+  <unjar src="${javac2.home}/forms_rt.jar" dest="out/production/Project3">
+
+            <patternset>
+	                  <include name="**/*.class"/>
+			            </patternset>
+				    </unjar>
+  </target>
   
   <target name="build.modules" depends="init, clean, compile.module.project3" description="build all modules"/>
   
-  <target name="all" depends="build.modules" description="build all"/>
+  <target name="all" depends="build.modules" description="build all">
+  <unjar src="${javac2.home}/forms_rt.jar" dest="out/production/Project3">
+            <patternset>
+	                  <include name="**/*.class"/>
+			            </patternset>
+				    </unjar>
+  </target>
+
 </project>
