@@ -1,5 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
 
 /**
  * Created by sxh112430 on 4/11/15.
@@ -23,7 +27,8 @@ public class WebBrowser {
 
         if(modeIsGUI) {
             JFrame frame = new JFrame("BrowserForm");
-            frame.setContentPane(new BrowserForm().mainPanel);
+            BrowserForm bf = new BrowserForm(startingURL);
+            frame.setContentPane(bf.mainPanel);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setPreferredSize(new Dimension(600, 800));
             frame.setMinimumSize(new Dimension(300,400));
@@ -32,8 +37,31 @@ public class WebBrowser {
             frame.setVisible(true);
         } else {
             // TODO: this
-            System.out.println("CLI mode not yet implemented");
-//            PageLoader pl = new PageLoader();
+            String html = "";
+            try {
+                ByteArrayOutputStream[] results = PageLoader.loadUrl(startingURL);
+                html = results[1].toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            XMLParser parser = new XMLParser(html, startingURL);
+            try {
+                parser.parse();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<XMLParser.VerySimpleEntity> parseResults = parser.getParseList();
+
+            for(XMLParser.VerySimpleEntity entity : parseResults) {
+                if(entity.text.equals(""))
+                    continue;
+                if(entity.textIsImageURL) {
+                    System.out.println("Image: "+entity.text);
+                } else if(!entity.textIsScript && !entity.textIsStyle) {
+                    System.out.println(entity.text);
+                }
+            }
         }
 
     }

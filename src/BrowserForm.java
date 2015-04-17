@@ -22,7 +22,7 @@ public class BrowserForm {
     private JButton goButton;
     private JLabel statusLabel;
 
-    public BrowserForm() {
+    public BrowserForm(String startingUrl) {
         goButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -36,6 +36,17 @@ public class BrowserForm {
             }
         });
         renderPanel.setLayout(new BoxLayout(renderPanel, BoxLayout.PAGE_AXIS));
+
+        if(startingUrl != null) {
+            currentURL = startingUrl;
+            if(!currentURL.startsWith("http://")) {
+                currentURL = "http://"+currentURL;
+            }
+            urlField.setText(currentURL);
+            PageLoader pl = new PageLoader(currentURL, renderPanel, statusLabel);
+            pl.start();
+        }
+
     }
 
     private void clearRenderPanel() {
@@ -46,9 +57,6 @@ public class BrowserForm {
 
     private void getURLFromUI() {
         String url = urlField.getText();
-        if(!url.startsWith("http")) {
-            url = "http://"+url;
-        }
         currentURL = url;
         urlField.setText(currentURL);
 

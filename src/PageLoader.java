@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -33,36 +34,27 @@ public class PageLoader extends Thread {
     }
 
     public static ByteArrayOutputStream[] loadUrl(String url) throws IOException {
-        // start by cutting off http:// if it exists
-        System.out.println("Loading url: " + url);
-        if (url.startsWith("http://")) {
-            url = url.substring(7);
-        }
 
-        int portNum = 80;
-
-        if (url.contains(":")) {
-            int colonIdx = url.indexOf(":");
-            String port = url.substring(colonIdx);
-            url = url.substring(0, colonIdx);
-            try {
-                portNum = Integer.parseInt(port);
-            } catch (NumberFormatException e) {
-                System.out.println("ERROR: port number was not parse-able! defaulting to port number 80");
-            }
-        }
-
-        int firstSlash = url.indexOf("/");
-        if (firstSlash == -1) {
-            firstSlash = url.length();
-        }
-        String urlRoot = url.substring(0, firstSlash);
-        String getString = url.substring(firstSlash, url.length());
-        if (getString.length() == 0) {
+        System.out.println("makin a url");
+        URL urlObj = new URL(url);
+        String getString = urlObj.getPath();
+        if(getString.equals("")) {
             getString = "/";
         }
+        String urlRoot = urlObj.getHost();
+        int portNum = urlObj.getPort();
+        if (portNum == -1) {
+            portNum = 80;
+        }
+
+        System.out.println(urlRoot+","+getString+","+portNum);
+
+        System.out.println("made the url, makin a socket");
 
         Socket socket = new Socket(InetAddress.getByName(urlRoot), portNum);
+        System.out.println("sport"+socket.getPort());
+
+        System.out.println("Mad a socket");
 
         DataOutputStream socketOut = null;
         try {
@@ -75,10 +67,10 @@ public class PageLoader extends Thread {
         socketOut.writeBytes("Connection: close\r\n\r\n");
         socketOut.flush();
 
-        BufferedInputStream dataIn = null;
+        InputStream dataIn = null;
 
         try {
-            dataIn = new BufferedInputStream(socket.getInputStream());
+            dataIn = socket.getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,9 +114,9 @@ public class PageLoader extends Thread {
                 headerIdx = 0;
             }
             String test = new String(contentBuffer, 0, contentIdx);
-            System.out.println("Adding string:");
-            System.out.println(test);
-            System.out.println("======================================");
+//            System.out.println("Adding string:");
+//            System.out.println(test);
+//            System.out.println("======================================");
             headerStream.write(headerBuffer, 0, headerIdx);
             headerStream.flush();
             contentStream.write(contentBuffer, 0, contentIdx);
@@ -151,7 +143,7 @@ public class PageLoader extends Thread {
         String header = boutArr[0].toString();
 
         if (header.indexOf("image/") == -1) {
-            System.out.println("WARNING: Requested image, but server returned something else!");
+            System.out.println("PageLoader WARNING: Requested image, but server returned something else!");
         }
 
         InputStream imageStream = new ByteArrayInputStream(boutArr[1].toByteArray());
@@ -160,7 +152,6 @@ public class PageLoader extends Thread {
 
     @Override
     public void run() {
-        System.out.println("loading now...");
         // load the page here
         ByteArrayOutputStream[] pageLoadResults = new ByteArrayOutputStream[2];
         try {
@@ -168,8 +159,6 @@ public class PageLoader extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Got results");
-        System.out.println(pageLoadResults[0].toString());
         String contentType = pageLoadResults[0].toString();
         if (!contentType.contains("text/")) {
             //TODO: Handle this error
@@ -177,17 +166,14 @@ public class PageLoader extends Thread {
         String html = pageLoadResults[1].toString();
 
         XMLParser pageParser = new XMLParser(html, this.myUrl);//TODO: fix rootUrl, probably not correct
-        System.out.println("Parsing now");
         try {
             pageParser.parse();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println("Finished parsing");
         final ArrayList<XMLParser.VerySimpleEntity> parseResults = pageParser.getParseList();
 
 
-        System.out.println("Gathering buffered images");
         /*
         Now, need to get BufferedImages for each Image in parseResults
          */
@@ -196,10 +182,9 @@ public class PageLoader extends Thread {
                 statusLabel.setText("Loading " + entity.text);
                 boolean success = true;
                 try {
-                    System.out.println("Loading: " + entity.text);
                     entity.bufferedImage = loadImage(entity.text);
                 } catch (Exception e) {
-                    System.out.println("ERROR loading image: " + entity.text);
+                    System.out.println("PageLoader ERROR loading image: " + entity.text);
                     success = false;
                 }
                 if (!success) {
@@ -210,7 +195,6 @@ public class PageLoader extends Thread {
             }
         }
 
-        System.out.println("Finished all! Going to update UI now...");
         if (myRenderPanel != null) {
             // do GUI specific stuff here
             Runnable updateUI = new Runnable() {
@@ -233,7 +217,6 @@ public class PageLoader extends Thread {
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
-            System.out.println("called invokeAndwait");
         }
     }
 }

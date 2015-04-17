@@ -85,26 +85,14 @@ public class HTMLEntity {
 
             if (key.equals("src")) {
                 // make the image source usable
-                System.out.println("Orig val");
-                System.out.println(value);
                 value = value.replaceAll("'", "");
                 value = value.replaceAll("\"","");
                 if(!value.startsWith("http://") && !value.startsWith("https://")) {
                     // imgSrc is relative, make it non-relative so we can get the image
                     if(value.startsWith("/")){
 
-                        System.out.println("Attr dump");
-                        for(String ss: attributes) {
-                            System.out.println(ss);
-                        }
-                        System.out.println("fin attr dump");
-
                         // this is a non-rel path, but they didn't use the http:// start string b/c they suck at writing websites
                         value = rootUrl + value;
-                        System.out.println("Root url:");
-                        System.out.println(rootUrl);
-                        System.out.println("New value:");
-                        System.out.println(value);
                     } else {
                         // this is relative
                         value = urlPrefix + "/" + value;

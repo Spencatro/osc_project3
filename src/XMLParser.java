@@ -84,7 +84,7 @@ public class XMLParser {
                 tagContent = tagContent.substring(1, tagContent.length() - 1); // cut out chevrons
                 tagContent = tagContent.trim();
                 String[] tagContentSplit = tagContent.split(" ");
-                String tagType = tagContentSplit[0]; // get the first element, this is the tag type, e.g. img, or p
+                String tagType = tagContentSplit[0].trim(); // get the first element, this is the tag type, e.g. img, or p
                 String[] attributeSplit = Arrays.copyOfRange(tagContentSplit, 1, tagContentSplit.length);
 
                 HTMLEntity thisTag = new HTMLEntity(urlPrefix, "", tagType, bodyContent, attributeSplit); //TODO: come up with a sane ID
@@ -105,7 +105,7 @@ public class XMLParser {
                 // throw an error if they don't match
                 tagContent = tagContent.substring(2,tagContent.length() -1);
                 String[] tagContentSplit = tagContent.split(" ");
-                String tagType = tagContentSplit[0];
+                String tagType = tagContentSplit[0].trim();
                 // body content belongs to previous entity on stack
                 boolean skipThisEntity = false;
                 for (String s:HTMLEntity.uncloseableTags) {
@@ -127,7 +127,6 @@ public class XMLParser {
                     for(HTMLEntity e:err) {
                         System.out.println(e);
                     }
-                    for(int i = 0; i < 1000000; i++);
                     throw new ParseException("Malformed XML: Closing tag didn't match last opened tag! Tag on stack: '"+pop.getTagString()+"'; closing tag: '"+tagType+"'",0);
                 }
                 // neither of the following lines are necessary, but for good practice
