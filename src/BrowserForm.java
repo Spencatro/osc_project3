@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Created by sxh112430 on 4/10/15.
@@ -47,21 +49,19 @@ public class BrowserForm {
         if(!url.startsWith("http")) {
             url = "http://"+url;
         }
-        System.out.println("url is: "+url);
         currentURL = url;
         urlField.setText(currentURL);
 
         clearRenderPanel();
-        count *=2;
-        for(int i = 0; i < count; i++) {
-            JLabel testLabel = new JLabel("test"+i);
-            renderPanel.add(testLabel);
-        }
+
+        statusLabel.setText("Loading: " + currentURL);
+
+        PageLoader pl = new PageLoader(currentURL, renderPanel, statusLabel);
+        pl.start();
 
         renderPanel.revalidate();
+        renderPanel.repaint();
 
-        //PageLoader loader = new PageLoader("test",renderPanel);
-        //loader.start();
     }
 
 }

@@ -27,11 +27,13 @@ public class WebBrowser {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setPreferredSize(new Dimension(600, 800));
             frame.setMinimumSize(new Dimension(300,400));
+            frame.setTitle("Spencer's GUI Web Browser");
             frame.pack();
             frame.setVisible(true);
         } else {
             // TODO: this
             System.out.println("CLI mode not yet implemented");
+//            PageLoader pl = new PageLoader();
         }
 
     }
