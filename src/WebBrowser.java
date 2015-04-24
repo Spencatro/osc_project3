@@ -71,10 +71,18 @@ public class WebBrowser {
             int httpCode = PageLoader.getHTTPCode(header);
             String codeDescription = PageLoader.getHTTPCodeDescription(header);
 
+            String contentType = PageLoader.getContentType(header);
+
             if (httpCode > 299 || httpCode < 200) {
                 //report the error
                 System.out.println("HTTP Error: "+httpCode+" "+codeDescription);
             } else {
+
+                if (contentType.contains("image/")) {
+                    //this is a single image, just print the url and quit
+                    System.out.println("Image: "+startingURL);
+                    return;
+                }
 
                 XMLParser parser = new XMLParser(html, startingURL);
                 try {
