@@ -1,2 +1,27 @@
-initial push
+HOW TO BUILD
+============
+
+After downloading and extracting the project, navigate to the root directory of the project and type "ant -f project3.xml" . This invokes the ANT build script.
+
+HOW TO RUN
+==========
+
+NOTE: In order to use the GUI mode, you MUST have given ssh the -X argument! (i.e. when running ssh, type "ssh -X myusername@cs1.utdallas.edu"
+
+After the build completes, run the program by typing the following:
+
+java -cp intellij_redist/:out/production/Project3/ WebBrowser [additiong arguments]
+
+PROGRAM ARGUMENTS
+=================
+
+The first argument (optional) must always be a webpage URL. NO SPACE ALLOWED IN URLS! Make sure all spaces are encoded (i.e. %20)! The second argument (optional) The second argument (optional) must be "cli" to invoke command-line interface mode.
+
+Example callstrings:
+# invokes CLI mode
+java -cp intellij_redist/:out/production/Project3/ WebBrowser http://www.utdallas.edu/ cli
+# invokes GUI mode
+java -cp intellij_redist/:out/production/Project3/ WebBrowser http://www.utdallas.edu/
+# invokes GUI mode with no initial URL
+java -cp intellij_redist/:out/production/Project3/ WebBrowser
 
