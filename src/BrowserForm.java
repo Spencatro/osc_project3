@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +19,7 @@ public class BrowserForm {
     private JPanel topPanel;
     public JPanel mainPanel;
     public JPanel renderPanel;
-    private JScrollPane scrollPane;
+    public JScrollPane scrollPane;
     private JButton goButton;
     private JLabel statusLabel;
 
@@ -35,7 +36,7 @@ public class BrowserForm {
                 getURLFromUI();
             }
         });
-        renderPanel.setLayout(new BoxLayout(renderPanel, BoxLayout.PAGE_AXIS));
+        renderPanel.setLayout(new BoxLayout(renderPanel, BoxLayout.Y_AXIS));
 
         if(startingUrl != null) {
             currentURL = startingUrl;

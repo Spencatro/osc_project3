@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -12,54 +14,85 @@ public class WebBrowser {
 
     private String startingURL = "";
     private boolean modeIsGUI = true;
+    private JFrame frame;
+    private JPanel mainPanel;
+    private JPanel renderPanel;
+    private JScrollPane scrollPane;
+
+    class ResizeListener extends ComponentAdapter {
+        public void componentResized(ComponentEvent e) {
+            for (Component comp : renderPanel.getComponents()) {
+                if (comp instanceof JTextArea) {
+                    ((JTextArea) comp).setMaximumSize(new Dimension(frame.getWidth() - 40, Integer.MAX_VALUE));
+                    comp.revalidate();
+                    comp.repaint();
+                }
+            }
+        }
+    }
 
     public WebBrowser(String args[]) {
 
-        if(args.length > 0) {
+        if (args.length > 0) {
             startingURL = args[0];
         }
 
-        if(args.length > 1) {
-            if(args[1].equals("cli")) {
+        if (args.length > 1) {
+            if (args[1].equals("cli")) {
                 modeIsGUI = false;
             }
         }
 
-        if(modeIsGUI) {
-            JFrame frame = new JFrame("BrowserForm");
+        if (modeIsGUI) {
+            frame = new JFrame("BrowserForm");
             BrowserForm bf = new BrowserForm(startingURL);
+            mainPanel = bf.mainPanel;
+            scrollPane = bf.scrollPane;
+            renderPanel = bf.renderPanel;
+            frame.addComponentListener(new ResizeListener());
             frame.setContentPane(bf.mainPanel);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setPreferredSize(new Dimension(600, 800));
-            frame.setMinimumSize(new Dimension(300,400));
+            frame.setMinimumSize(new Dimension(300, 400));
             frame.setTitle("Spencer's GUI Web Browser");
             frame.pack();
             frame.setVisible(true);
         } else {
-            // TODO: this
             String html = "";
+            String header = "";
             try {
                 ByteArrayOutputStream[] results = PageLoader.loadUrl(startingURL);
+                header = results[0].toString();
                 html = results[1].toString();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            XMLParser parser = new XMLParser(html, startingURL);
-            try {
-                parser.parse();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
-            ArrayList<XMLParser.VerySimpleEntity> parseResults = parser.getParseList();
+            int httpCode = PageLoader.getHTTPCode(header);
+            String codeDescription = PageLoader.getHTTPCodeDescription(header);
 
-            for(XMLParser.VerySimpleEntity entity : parseResults) {
-                if(entity.text.equals(""))
-                    continue;
-                if(entity.textIsImageURL) {
-                    System.out.println("Image: "+entity.text);
-                } else if(!entity.textIsScript && !entity.textIsStyle) {
-                    System.out.println(entity.text);
+            if (httpCode > 299 || httpCode < 200) {
+                //report the error
+                System.out.println("HTTP Error: "+httpCode+" "+codeDescription);
+            } else {
+
+                XMLParser parser = new XMLParser(html, startingURL);
+                try {
+                    parser.parse();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                ArrayList<VerySimpleEntity> parseResults = parser.getParseList();
+
+                for (VerySimpleEntity entity : parseResults) {
+                    if (entity.text.equals(""))
+                        continue;
+                    if (entity.textIsImageURL) {
+                        System.out.println("Image: " + entity.text);
+                    } else if (!entity.textIsScript && !entity.textIsStyle) {
+                        System.out.println(entity.text);
+                    }
                 }
             }
         }

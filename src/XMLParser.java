@@ -10,36 +10,6 @@ import java.util.Stack;
  */
 public class XMLParser {
 
-    class VerySimpleEntity {
-        public String text;
-        public boolean textIsImageURL;
-        public boolean textIsScript;
-        public boolean textIsStyle;
-        public BufferedImage bufferedImage;
-
-        public VerySimpleEntity(String text, boolean isImage, boolean textIsScript, boolean textIsStyle) {
-            /*
-            if it's an image, use text as a src URL
-             */
-            this.text = text.trim();
-            this.textIsImageURL = isImage;
-            this.textIsScript = textIsScript;
-            this.textIsStyle = textIsStyle;
-        }
-
-        public JLabel toJLabel() {
-            JLabel label;
-            if (textIsImageURL && bufferedImage != null) {
-                label = new JLabel(new ImageIcon(bufferedImage));
-            } else if(textIsScript || textIsStyle) {
-                label = new JLabel();
-            } else {
-                label = new JLabel(text);
-            }
-            return label;
-        }
-    }
-
     private String preparse = "";
     private String urlPrefix;
     private ArrayList<VerySimpleEntity> parseList = new ArrayList<VerySimpleEntity>();

@@ -21,6 +21,7 @@ public class HTMLEntity {
 
     private String urlPrefix;
     private String rootUrl;
+    private String directoryUrl;
     private int typeID;
     private Map<String, String> attributes = new HashMap<String, String>();
     private String tagString;
@@ -67,6 +68,16 @@ public class HTMLEntity {
             rootUrl = urlPrefix.substring(0,rootUrl.indexOf("/"));
         }
 
+        directoryUrl = urlPrefix;
+        if(!directoryUrl.endsWith("/")) {
+            if(directoryUrl.contains("/")) {
+                int rIndex = directoryUrl.lastIndexOf("/");
+                directoryUrl = directoryUrl.substring(0, rIndex+1);
+            } else {
+                directoryUrl+= "/";
+            }
+        }
+
         this.id = id;
         this.tagString = tag;
         this.body = body;
@@ -90,12 +101,11 @@ public class HTMLEntity {
                 if(!value.startsWith("http://") && !value.startsWith("https://")) {
                     // imgSrc is relative, make it non-relative so we can get the image
                     if(value.startsWith("/")){
-
                         // this is a non-rel path, but they didn't use the http:// start string b/c they suck at writing websites
                         value = rootUrl + value;
                     } else {
                         // this is relative
-                        value = urlPrefix + "/" + value;
+                        value = directoryUrl + value;
                     }
                 }
 
