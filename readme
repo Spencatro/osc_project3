@@ -25,3 +25,8 @@ java -cp intellij_redist/:out/production/Project3/ WebBrowser http://www.utdalla
 # invokes GUI mode with no initial URL
 java -cp intellij_redist/:out/production/Project3/ WebBrowser
 
+
+FINAL NOTES
+===========
+
+When loading http://assets.climatecentral.org/images/uploads/news/Earth.jpg , the pageload will hang approximately half of the time. I guess this is probably occuring due to some sort of hotlinking prevention. Please attempt http://www.utdallas.edu/~ozbirn/image.html instead.
